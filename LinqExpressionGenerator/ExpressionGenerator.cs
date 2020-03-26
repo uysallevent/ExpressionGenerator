@@ -5,22 +5,22 @@ using System.Reflection;
 
 namespace LinqExpressionGenerator
 {
-    public class ExpressionGenerator<Treq, Tres> : IExpressionGenerator<Treq, Tres>
+    public static class ExpressionGenerator<Treq, Tres> 
         where Treq : class, new()
         where Tres : class, new()
     {
-        MethodInfo methodInfo;
-        public Expression<Func<Treq, bool>> Generate(Treq request)
+        static MethodInfo methodInfo;
+        public static Expression<Func<Tres, bool>> Generate(Treq request)
         {
             Expression finalExpression = Expression.Constant(true);
-            var parameter = Expression.Parameter(typeof(Treq), "x");
+            var parameter = Expression.Parameter(typeof(Tres), "x");
             Expression expression = null;
             foreach (var item in request.GetType().GetProperties().ToList())
             {
                 if (typeof(string).IsAssignableFrom(item.PropertyType) && item.GetValue(request, null) == null)
                     continue;
 
-                //Optional. Our 
+                
                 if (typeof(int).IsAssignableFrom(item.PropertyType) && (item.GetValue(request, null) == null || (int)item.GetValue(request, null) == 0))
                     continue;
 
@@ -56,7 +56,7 @@ namespace LinqExpressionGenerator
 
             if (finalExpression == null || parameter == null)
                 return null;
-            return Expression.Lambda<Func<Treq, bool>>(finalExpression, parameter);
+            return Expression.Lambda<Func<Tres, bool>>(finalExpression, parameter);
         }
     }
 
