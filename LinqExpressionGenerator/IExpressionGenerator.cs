@@ -9,6 +9,6 @@ namespace LinqExpressionGenerator
         where Treq : class, new()
         where Tres : class, new()
     {
-
+        Expression<Func<Treq, bool>> Generate(Treq request);
     }
 }
