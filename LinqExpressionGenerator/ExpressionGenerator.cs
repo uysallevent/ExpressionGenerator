@@ -19,7 +19,6 @@ namespace LinqExpressionGenerator
             {
                 if (typeof(string).IsAssignableFrom(item.PropertyType) && item.GetValue(request, null) == null)
                     continue;
-
                 
                 if (typeof(int).IsAssignableFrom(item.PropertyType) && (item.GetValue(request, null) == null || (int)item.GetValue(request, null) == 0))
                     continue;
