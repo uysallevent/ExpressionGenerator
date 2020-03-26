@@ -6,4 +6,4 @@ This class accept 2 generic models. If your input and output models are the same
 
 
 # Important
-1) If input and output model are different, properties names must be same but not all properties are required.(only the fields you want to show in the answer)
+1) If input and output model are different, properties names must be same but not all properties are required (only the properties you want to show in the answer)
