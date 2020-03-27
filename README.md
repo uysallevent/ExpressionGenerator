@@ -11,7 +11,7 @@ If your request and response models are different, properties names must be same
 
 # Result
 I used it to generate linq queries for filtering operations coming from users table.
-Hopefully it benefits your business.
+Hopefully it benefit your business.
 
 ```
         static MethodInfo methodInfo;
