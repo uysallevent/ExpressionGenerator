@@ -6,9 +6,12 @@ This class accept 2 generic models. If your input and output models are the same
 
 I provided control for just 4 data types, but you can increase it if you want.
 
-
 # Important
-1) If your input and output models are different, properties names must be same but not all properties are required for response model (You can prevent unwanted properties from appearing on the output)
+If your request and response models are different, properties names must be same but not all properties are required for response model (You can prevent unwanted properties from appearing on the output)
+
+# Result
+I used it to generate linq queries for filtering operations coming from users table.
+Hopefully it benefits your business.
 
 ```
  public static Expression<Func<Tres, bool>> Generate(Treq request)
