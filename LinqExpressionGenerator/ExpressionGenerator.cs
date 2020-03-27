@@ -43,13 +43,15 @@ namespace LinqExpressionGenerator
                 if (typeof(DateTime).IsAssignableFrom(item.PropertyType))
                     methodInfo = typeof(DateTime).GetMethod("Equals", new Type[] { typeof(DateTime) });
 
-                var constanttxtBayiKod = Expression.Constant(item.GetValue(request, null));
-                var propertytxtBayiKod = Expression.Property(parameter, item.Name);
-                expression = Expression.Call(propertytxtBayiKod, methodInfo, constanttxtBayiKod);
+                var arguments = Expression.Constant(item.GetValue(request, null));
+                var property = Expression.Property(parameter, item.Name);
+                expression = Expression.Call(property, methodInfo, arguments);
 
                 if (expression == null)
                     continue;
+
                 finalExpression = Expression.AndAlso(finalExpression, expression);
+
                 expression = null;
             }
 
