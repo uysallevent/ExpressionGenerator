@@ -22,35 +22,30 @@ Hopefully it benefit your business.
             Expression expression = null;
             foreach (var item in request.GetType().GetProperties().ToList())
             {
-                if (typeof(string).IsAssignableFrom(item.PropertyType) && item.GetValue(request, null) == null)
-                    continue;
-                
-                if (typeof(int).IsAssignableFrom(item.PropertyType) && (item.GetValue(request, null) == null || (int)item.GetValue(request, null) == 0))
-                    continue;
-
-                if (typeof(decimal).IsAssignableFrom(item.PropertyType) && (item.GetValue(request, null) == null || (decimal)item.GetValue(request, null) == 0))
-                    continue;
-
-                if (typeof(double).IsAssignableFrom(item.PropertyType) && (item.GetValue(request, null) == null || (double)item.GetValue(request, null) == 0))
-                    continue;
-
-                if (typeof(DateTime).IsAssignableFrom(item.PropertyType) && item.GetValue(request, null) == null)
-                    continue;
-
+                //when Model property was string object, called object does getting lowercase
                 if (typeof(string).IsAssignableFrom(item.PropertyType))
+                {
                     methodInfo = typeof(string).GetMethod("Contains", new Type[] { typeof(string) });
-                if (typeof(int).IsAssignableFrom(item.PropertyType))
-                    methodInfo = typeof(int).GetMethod("Equals", new Type[] { typeof(int) });
-                if (typeof(decimal).IsAssignableFrom(item.PropertyType))
-                    methodInfo = typeof(decimal).GetMethod("Equals", new Type[] { typeof(decimal) });
-                if (typeof(double).IsAssignableFrom(item.PropertyType))
-                    methodInfo = typeof(double).GetMethod("Equals", new Type[] { typeof(double) });
-                if (typeof(DateTime).IsAssignableFrom(item.PropertyType))
-                    methodInfo = typeof(DateTime).GetMethod("Equals", new Type[] { typeof(DateTime) });
+                    var argumentsForStringObject = Expression.Constant(item.GetValue(request, null).ToString().ToLower());
+                    var propertyForStringObject = Expression.Property(parameter, item.Name);
+                    var stringObjectWithLowerCase = Expression.Call(propertyForStringObject, "ToLower", null);
+                    expression = Expression.Call(stringObjectWithLowerCase, methodInfo, argumentsForStringObject);
+                }
+                else
+                {
+                    if (typeof(int).IsAssignableFrom(item.PropertyType))
+                        methodInfo = typeof(int).GetMethod("Equals", new Type[] { typeof(int) });
+                    if (typeof(decimal).IsAssignableFrom(item.PropertyType))
+                        methodInfo = typeof(decimal).GetMethod("Equals", new Type[] { typeof(decimal) });
+                    if (typeof(double).IsAssignableFrom(item.PropertyType))
+                        methodInfo = typeof(double).GetMethod("Equals", new Type[] { typeof(double) });
+                    if (typeof(DateTime).IsAssignableFrom(item.PropertyType))
+                        methodInfo = typeof(DateTime).GetMethod("Equals", new Type[] { typeof(DateTime) });
 
-                var arguments = Expression.Constant(item.GetValue(request, null));
-                var property = Expression.Property(parameter, item.Name);
-                expression = Expression.Call(property, methodInfo, arguments);
+                    var arguments = Expression.Constant(item.GetValue(request, null));
+                    var property = Expression.Property(parameter, item.Name);
+                    expression = Expression.Call(property, methodInfo, arguments);
+                }
 
                 if (expression == null)
                     continue;
