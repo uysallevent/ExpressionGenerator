@@ -17,13 +17,13 @@ namespace LinqExpressionGenerator
             Expression expression = null;
             foreach (var item in request.GetType().GetProperties().ToList())
             {
-                if (typeof(string).IsAssignableFrom(item.PropertyType) && string.IsNullOrEmpty(item.GetValue(request, null).ToString()))
+                if (typeof(string).IsAssignableFrom(item.PropertyType) && item.GetValue(request, null) == null)
                     continue;
 
                 if ((typeof(int).IsAssignableFrom(item.PropertyType) || typeof(int?).IsAssignableFrom(item.PropertyType)) && (item.GetValue(request, null) == null || (int)item.GetValue(request, null) == 0))
                     continue;
 
-                if ((typeof(short).IsAssignableFrom(item.PropertyType) || typeof(short?).IsAssignableFrom(item.PropertyType)) && (item.GetValue(request, null) == null || (short)item.GetValue(request, null) ==  0))
+                if ((typeof(short).IsAssignableFrom(item.PropertyType) || typeof(short?).IsAssignableFrom(item.PropertyType)) && (item.GetValue(request, null) == null || (short)item.GetValue(request, null) == 0))
                     continue;
 
                 if ((typeof(decimal).IsAssignableFrom(item.PropertyType) || typeof(decimal?).IsAssignableFrom(item.PropertyType)) && (item.GetValue(request, null) == null || (decimal)item.GetValue(request, null) == 0))
@@ -67,18 +67,9 @@ namespace LinqExpressionGenerator
                 }
                 else
                 {
-                    if (typeof(int).IsAssignableFrom(item.PropertyType))
-                        methodInfo = typeof(int).GetMethod("Equals", new Type[] { typeof(int) });
-                    if (typeof(decimal).IsAssignableFrom(item.PropertyType))
-                        methodInfo = typeof(decimal).GetMethod("Equals", new Type[] { typeof(decimal) });
-                    if (typeof(double).IsAssignableFrom(item.PropertyType))
-                        methodInfo = typeof(double).GetMethod("Equals", new Type[] { typeof(double) });
-                    if (typeof(short).IsAssignableFrom(item.PropertyType))
-                        methodInfo = typeof(short).GetMethod("Equals", new Type[] { typeof(short) });
-
                     var arguments = Expression.Constant(item.GetValue(request, null));
                     var property = Expression.Property(parameter, item.Name);
-                    expression = Expression.Call(property, methodInfo, arguments);
+                    expression = Expression.Equal(property, Expression.Convert(arguments, property.Type));
                 }
 
                 if (expression == null)
