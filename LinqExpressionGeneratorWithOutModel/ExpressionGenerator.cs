@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 
-namespace LinqExpressionGenerator
+namespace LinqExpressionGeneratorWithOutModel
 {
     public static class ExpressionGenerator<Treq, Tres>
-        where Treq : class, new()
+        where Treq : System.Collections.IList, new()
         where Tres : class, new()
     {
         static MethodInfo methodInfo;
@@ -33,9 +35,6 @@ namespace LinqExpressionGenerator
                     continue;
 
                 if ((typeof(DateTime).IsAssignableFrom(item.PropertyType) || typeof(DateTime?).IsAssignableFrom(item.PropertyType)) && item.GetValue(request, null) == null)
-                    continue;
-
-                if ((typeof(bool).IsAssignableFrom(item.PropertyType) || typeof(bool?).IsAssignableFrom(item.PropertyType)) && (item.GetValue(request, null) == null))
                     continue;
 
                 //when model property was string, called object does getting lowercase
@@ -86,5 +85,4 @@ namespace LinqExpressionGenerator
         }
 
     }
-
 }
